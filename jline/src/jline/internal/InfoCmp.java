@@ -31,7 +31,8 @@ public class InfoCmp {
         String caps = CAPS.get(terminal);
         if (caps == null) {
             Process p = new ProcessBuilder("infocmp", terminal).start();
-            caps = TerminalLineSettings.waitAndCapture(p);
+//            caps = TerminalLineSettings.waitAndCapture(p);
+            System.err.println("enable DefaultTerminal2 first");
             CAPS.put(terminal, caps);
         }
         return caps;

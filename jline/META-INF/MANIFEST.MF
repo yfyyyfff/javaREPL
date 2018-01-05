@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Export-Package: jline;uses:="org.fusesource.jansi";version="2.10.0",jl
+ ine.console;uses:="org.fusesource.jansi,jline.console.history,jline,j
+ line.console.completer";version="2.10.0",jline.console.completer;uses
+ :="jline.console";version="2.10.0",jline.console.history;version="2.1
+ 0.0",org.fusesource.jansi;version="1.9"
+Built-By: jason
+Tool: Bnd-0.0.357
+Bundle-Name: JLine
+Created-By: 1.6.0_37 (Apple Inc.)
+DynamicImport-Package: *
+Build-Jdk: 1.6.0_37
+Bundle-Version: 2.10.0
+Bnd-LastModified: 1358911624485
+Bundle-ManifestVersion: 2
+Bundle-Description: Sonatype helps open source projects to set up Mave
+ n repositories on https://oss.sonatype.org/
+Bundle-License: http://www.opensource.org/licenses/bsd-license.php
+Bundle-SymbolicName: jline
+Import-Package: javax.swing;resolution:=optional
+Archiver-Version: Plexus Archiver
+

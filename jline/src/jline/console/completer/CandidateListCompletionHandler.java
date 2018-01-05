@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -10,7 +10,6 @@ package jline.console.completer;
 
 import jline.console.ConsoleReader;
 import jline.console.CursorBuffer;
-import jline.internal.Ansi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,25 +33,6 @@ import java.util.Set;
 public class CandidateListCompletionHandler
     implements CompletionHandler
 {
-    private boolean printSpaceAfterFullCompletion = true;
-    private boolean stripAnsi;
-
-    public boolean getPrintSpaceAfterFullCompletion() {
-        return printSpaceAfterFullCompletion;
-    }
-
-    public void setPrintSpaceAfterFullCompletion(boolean printSpaceAfterFullCompletion) {
-        this.printSpaceAfterFullCompletion = printSpaceAfterFullCompletion;
-    }
-
-    public boolean isStripAnsi() {
-        return stripAnsi;
-    }
-
-    public void setStripAnsi(boolean stripAnsi) {
-        this.stripAnsi = stripAnsi;
-    }
-
     // TODO: handle quotes and escaped quotes && enable automatic escaping of whitespace
 
     public boolean complete(final ConsoleReader reader, final List<CharSequence> candidates, final int pos) throws
@@ -62,13 +42,7 @@ public class CandidateListCompletionHandler
 
         // if there is only one completion, then fill in the buffer
         if (candidates.size() == 1) {
-            String value = Ansi.stripAnsi(candidates.get(0).toString());
-
-            if (buf.cursor == buf.buffer.length()
-                    && printSpaceAfterFullCompletion
-                    && !value.endsWith(" ")) {
-                value += " ";
-            }
+            CharSequence value = candidates.get(0);
 
             // fail if the only candidate is the same as the current buffer
             if (value.equals(buf.toString())) {
@@ -116,8 +90,7 @@ public class CandidateListCompletionHandler
 
         if (distinct.size() > reader.getAutoprintThreshold()) {
             //noinspection StringConcatenation
-            reader.println();
-            reader.print(Messages.DISPLAY_CANDIDATES.format(distinct.size()));
+            reader.print(Messages.DISPLAY_CANDIDATES.format(candidates.size()));
             reader.flush();
 
             int c;
@@ -169,25 +142,10 @@ public class CandidateListCompletionHandler
             return null;
         }
 
-        if (candidates.size() == 1) {
-            return candidates.get(0).toString();
-        }
-
         // convert to an array for speed
-        String first = null;
-        String[] strings = new String[candidates.size() - 1];
-        for (int i = 0; i < candidates.size(); i++) {
-            String str = candidates.get(i).toString();
-            if (stripAnsi) {
-                str = Ansi.stripAnsi(str);
-            }
-            if (first == null) {
-                first = str;
-            } else {
-                strings[i - 1] = str;
-            }
-        }
+        String[] strings = candidates.toArray(new String[candidates.size()]);
 
+        String first = strings[0];
         StringBuilder candidate = new StringBuilder();
 
         for (int i = 0; i < first.length(); i++) {
@@ -205,9 +163,9 @@ public class CandidateListCompletionHandler
     /**
      * @return true is all the elements of <i>candidates</i> start with <i>starts</i>
      */
-    private static boolean startsWith(final String starts, final String[] candidates) {
+    private boolean startsWith(final String starts, final String[] candidates) {
         for (String candidate : candidates) {
-            if (!candidate.toLowerCase().startsWith(starts.toLowerCase())) {
+            if (!candidate.startsWith(starts)) {
                 return false;
             }
         }

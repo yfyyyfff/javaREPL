@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -42,9 +42,6 @@ public abstract class TerminalSupport
     }
 
     public void init() throws Exception {
-        if (shutdownTask != null) {
-            ShutdownHooks.remove(shutdownTask);
-        }
         // Register a task to restore the terminal on shutdown
         this.shutdownTask = ShutdownHooks.add(new Task()
         {
@@ -56,10 +53,7 @@ public abstract class TerminalSupport
 
     public void restore() throws Exception {
         TerminalFactory.resetIf(this);
-        if (shutdownTask != null) {
-          ShutdownHooks.remove(shutdownTask);
-          shutdownTask = null;
-        }
+        ShutdownHooks.remove(shutdownTask);
     }
 
     public void reset() throws Exception {
@@ -81,7 +75,7 @@ public abstract class TerminalSupport
     }
 
     /**
-     * Subclass to change behavior if needed.
+     * Subclass to change behavior if needed. 
      * @return the passed out
      */
     public OutputStream wrapOutIfNeeded(OutputStream out) {
@@ -112,18 +106,7 @@ public abstract class TerminalSupport
         Log.debug("Echo enabled: ", enabled);
     }
 
-    public void disableInterruptCharacter() {
-    }
-
-    public void enableInterruptCharacter() {
-    }
-
     public InputStream wrapInIfNeeded(InputStream in) throws IOException {
         return in;
-    }
-
-    public String getOutputEncoding() {
-        // null for unknown
-        return null;
     }
 }

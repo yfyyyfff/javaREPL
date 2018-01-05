@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -70,7 +70,7 @@ public class FileNameCompleter
         else if (translated.startsWith("~")) {
             translated = homeDir.getParentFile().getAbsolutePath();
         }
-        else if (!(new File(translated).isAbsolute())) {
+        else if (!(translated.startsWith(separator()))) {
             String cwd = getUserDir().getAbsolutePath();
             translated = cwd + separator() + translated;
         }

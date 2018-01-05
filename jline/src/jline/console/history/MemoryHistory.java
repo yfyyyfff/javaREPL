@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -261,6 +261,8 @@ public class MemoryHistory
 
     /**
      * Move to the specified index in the history
+     * @param index
+     * @return
      */
     public boolean moveTo(int index) {
         index -= offset;
@@ -335,12 +337,5 @@ public class MemoryHistory
         return true;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Entry e : this) {
-            sb.append(e.toString() + "\n");
-        }
-        return sb.toString();
-    }
+
 }

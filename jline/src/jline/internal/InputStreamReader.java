@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -28,9 +28,7 @@ import java.nio.charset.UnmappableCharacterException;
  * NOTE for JLine: the default InputStreamReader that comes from the JRE
  * usually read more bytes than needed from the input stream, which
  * is not usable in a character per character model used in the console.
- * We thus use the harmony code which only reads the minimal number of bytes,
- * with a modification to ensure we can read larger characters (UTF-16 has
- * up to 4 bytes, and UTF-32, rare as it is, may have up to 8).
+ * We thus use the harmony code which only reads the minimal number of bytes.
  */
 /**
  * A class for turning a byte stream into a character stream. Data read from the
@@ -49,6 +47,8 @@ public class InputStreamReader extends Reader {
 
     private boolean endOfInput = false;
 
+    String encoding;
+
     CharsetDecoder decoder;
 
     ByteBuffer bytes = ByteBuffer.allocate(BUFFER_SIZE);
@@ -65,7 +65,9 @@ public class InputStreamReader extends Reader {
     public InputStreamReader(InputStream in) {
         super(in);
         this.in = in;
-        decoder = Charset.defaultCharset().newDecoder().onMalformedInput(
+        // FIXME: This should probably use Configuration.getFileEncoding()
+        encoding = System.getProperty("file.encoding", "ISO8859_1"); //$NON-NLS-1$//$NON-NLS-2$
+        decoder = Charset.forName(encoding).newDecoder().onMalformedInput(
                 CodingErrorAction.REPLACE).onUnmappableCharacter(
                 CodingErrorAction.REPLACE);
         bytes.limit(0);
@@ -168,7 +170,7 @@ public class InputStreamReader extends Reader {
         if (!isOpen()) {
             return null;
         }
-        return decoder.charset().name();
+        return encoding;
     }
 
     /**
@@ -190,8 +192,8 @@ public class InputStreamReader extends Reader {
                 throw new IOException("InputStreamReader is closed.");
             }
 
-            char buf[] = new char[4];
-            return read(buf, 0, 4) != -1 ? Character.codePointAt(buf, 0) : -1;
+            char buf[] = new char[1];
+            return read(buf, 0, 1) != -1 ? buf[0] : -1;
         }
     }
 

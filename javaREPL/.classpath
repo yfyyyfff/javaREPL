@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="/repl.libs/lib/totallylazy-2.285.jar"/>
 	<classpathentry kind="lib" path="/repl.libs/lib/utterlyidle-2.120.jar"/>
 	<classpathentry kind="lib" path="/repl.libs/lib/yadic-2.48.jar"/>
-	<classpathentry kind="lib" path="/repl.jline/bin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/repl.jline"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -32,8 +32,11 @@ public class ConsoleKeys {
 
     public ConsoleKeys(String appName, URL inputrcUrl) {
         keyMaps = KeyMap.keyMaps();
-        setVar("editing-mode", "emacs");
         loadKeys(appName, inputrcUrl);
+    }
+
+    protected boolean isViEditMode() {
+        return keys.isViKeyMap();
     }
 
     protected boolean setKeyMap (String name) {
@@ -55,6 +58,10 @@ public class ConsoleKeys {
 
     protected void setKeys(KeyMap keys) {
         this.keys = keys;
+    }
+
+    protected boolean getViEditMode() {
+        return keys.isViKeyMap ();
     }
 
     protected void loadKeys(String appName, URL inputrcUrl) {
@@ -120,8 +127,13 @@ public class ConsoleKeys {
                         if (args.startsWith("term=")) {
                             // TODO
                         } else if (args.startsWith("mode=")) {
-                            String mode = variables.get("editing-mode");
-                            parsing = args.substring("mode=".length()).equalsIgnoreCase(mode);
+                            if (args.equalsIgnoreCase("mode=vi")) {
+                                parsing = isViEditMode();
+                            } else if (args.equals("mode=emacs")) {
+                                parsing = !isViEditMode();
+                            } else {
+                                parsing = false;
+                            }
                         } else {
                             parsing = args.equalsIgnoreCase(appName);
                         }
@@ -173,7 +185,7 @@ public class ConsoleKeys {
                         && line.charAt(i) != ' ' && line.charAt(i) != '\t'
                         ; i++);
                 keySeq = line.substring(0, i);
-                equivalency = i + 1 < line.length() && line.charAt(i) == ':' && line.charAt(i + 1) == '=';
+                equivalency = (i + 1 < line.length() && line.charAt(i) == ':' && line.charAt(i + 1) == '=');
                 i++;
                 if (equivalency) {
                     i++;
@@ -244,7 +256,7 @@ public class ConsoleKeys {
         }
     }
 
-    private static String translateQuoted(String keySeq) {
+    private String translateQuoted(String keySeq) {
         int i;
         String str = keySeq.substring( 1, keySeq.length() - 1 );
         keySeq = "";
@@ -330,7 +342,7 @@ public class ConsoleKeys {
         return keySeq;
     }
 
-    private static char getKeyFromName(String name) {
+    private char getKeyFromName(String name) {
         if ("DEL".equalsIgnoreCase(name) || "Rubout".equalsIgnoreCase(name)) {
             return 0x7f;
         } else if ("ESC".equalsIgnoreCase(name) || "Escape".equalsIgnoreCase(name)) {

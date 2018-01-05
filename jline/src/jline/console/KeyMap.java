@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2002-2016, the original author or authors.
+ * Copyright (c) 2002-2012, the original author or authors.
  *
  * This software is distributable under the BSD license. See the terms of the
  * BSD license in the documentation provided with this software.
@@ -33,19 +33,20 @@ public class KeyMap {
     private Object[] mapping = new Object[KEYMAP_LENGTH];
     private Object anotherKey = null;
     private String name;
-
-    public KeyMap(String name) {
-        this(name, new Object[KEYMAP_LENGTH]);
+    private boolean isViKeyMap;
+    
+    public KeyMap(String name, boolean isViKeyMap) {
+        this(name, new Object[KEYMAP_LENGTH], isViKeyMap);
     }
 
-    @Deprecated
-    public KeyMap(String name, boolean unused) {
-        this(name);
-    }
-
-    protected KeyMap(String name, Object[] mapping) {
+    protected KeyMap(String name, Object[] mapping, boolean isViKeyMap) {
         this.mapping = mapping;
         this.name = name;
+        this.isViKeyMap = isViKeyMap;
+    }
+    
+    public boolean isViKeyMap() {
+        return isViKeyMap;
     }
     
     public String getName() {
@@ -109,7 +110,7 @@ public class KeyMap {
                 }
                 if (i < keySeq.length() - 1) {
                     if (!(map.mapping[c] instanceof KeyMap)) {
-                        KeyMap m = new KeyMap("anonymous");
+                        KeyMap m = new KeyMap("anonymous", false);
                         if (map.mapping[c] != Operation.DO_LOWERCASE_VERSION) {
                             m.anotherKey = map.mapping[c];
                         }
@@ -166,17 +167,10 @@ public class KeyMap {
         bind( map, "\340\121", Operation.END_OF_HISTORY );
         bind( map, "\340\122", Operation.OVERWRITE_MODE );
         bind( map, "\340\123", Operation.DELETE_CHAR );
-
-        bind( map, "\000\107", Operation.BEGINNING_OF_LINE );
-        bind( map, "\000\110", Operation.PREVIOUS_HISTORY );
-        bind( map, "\000\111", Operation.BEGINNING_OF_HISTORY );
         bind( map, "\000\110", Operation.PREVIOUS_HISTORY );
         bind( map, "\000\113", Operation.BACKWARD_CHAR );
         bind( map, "\000\115", Operation.FORWARD_CHAR );
-        bind( map, "\000\117", Operation.END_OF_LINE );
         bind( map, "\000\120", Operation.NEXT_HISTORY );
-        bind( map, "\000\121", Operation.END_OF_HISTORY );
-        bind( map, "\000\122", Operation.OVERWRITE_MODE );
         bind( map, "\000\123", Operation.DELETE_CHAR );
 
         bind( map, "\033[A", Operation.PREVIOUS_HISTORY );
@@ -186,15 +180,13 @@ public class KeyMap {
         bind( map, "\033[H", Operation.BEGINNING_OF_LINE );
         bind( map, "\033[F", Operation.END_OF_LINE );
 
-        bind( map, "\033OA", Operation.PREVIOUS_HISTORY );
-        bind( map, "\033OB", Operation.NEXT_HISTORY );
-        bind( map, "\033OC", Operation.FORWARD_CHAR );
-        bind( map, "\033OD", Operation.BACKWARD_CHAR );
-        bind( map, "\033OH", Operation.BEGINNING_OF_LINE );
-        bind( map, "\033OF", Operation.END_OF_LINE );
+        bind( map, "\033[OA", Operation.PREVIOUS_HISTORY );
+        bind( map, "\033[OB", Operation.NEXT_HISTORY );
+        bind( map, "\033[OC", Operation.FORWARD_CHAR );
+        bind( map, "\033[OD", Operation.BACKWARD_CHAR );
+        bind( map, "\033[OH", Operation.BEGINNING_OF_LINE );
+        bind( map, "\033[OF", Operation.END_OF_LINE );
 
-        bind( map, "\033[1~", Operation.BEGINNING_OF_LINE);
-        bind( map, "\033[4~", Operation.END_OF_LINE);
         bind( map, "\033[3~", Operation.DELETE_CHAR);
 
         // MINGW32
@@ -238,12 +230,12 @@ public class KeyMap {
         bindArrowKeys(viMov);
         keyMaps.put(VI_MOVE, viMov);
         keyMaps.put("vi-command", viMov);
-        keyMaps.put("vi", viMov);
-
+        
         KeyMap viIns = viInsertion();
         bindArrowKeys(viIns);
         keyMaps.put(VI_INSERT, viIns);
-
+        keyMaps.put("vi", viIns);
+        
         return keyMaps;
     }
 
@@ -289,7 +281,7 @@ public class KeyMap {
             map[i] = Operation.SELF_INSERT;
         }
         map[DELETE] = Operation.BACKWARD_DELETE_CHAR;
-        return new KeyMap(EMACS, map);
+        return new KeyMap(EMACS, map, false);
     }
 
     public static final char CTRL_D = (char) 4;
@@ -299,7 +291,6 @@ public class KeyMap {
     public static final char CTRL_J = (char) 10;
     public static final char CTRL_M = (char) 13;
     public static final char CTRL_R = (char) 18;
-    public static final char CTRL_S = (char) 19;
     public static final char CTRL_U = (char) 21;
     public static final char CTRL_X = (char) 24;
     public static final char CTRL_Y = (char) 25;
@@ -322,7 +313,7 @@ public class KeyMap {
         }
         map['e'] = Operation.CALL_LAST_KBD_MACRO;
         map[DELETE] = Operation.KILL_LINE;
-        return new KeyMap(EMACS_CTLX, map);
+        return new KeyMap(EMACS_CTLX, map, false);
     }
 
     public static KeyMap emacsMeta() {
@@ -363,7 +354,7 @@ public class KeyMap {
         map['y'] = Operation.YANK_POP;
         map['~'] = Operation.TILDE_EXPAND;
         map[DELETE] = Operation.BACKWARD_KILL_WORD;
-        return new KeyMap(EMACS_META, map);
+        return new KeyMap(EMACS_META, map, false);
     }
 
     public static KeyMap viInsertion() {
@@ -408,7 +399,7 @@ public class KeyMap {
             map[i] = Operation.SELF_INSERT;
         }
         map[DELETE] = Operation.BACKWARD_DELETE_CHAR;
-        return new KeyMap(VI_INSERT, map);
+        return new KeyMap(VI_INSERT, map, false);
     }
 
     public static KeyMap viMovement() {
@@ -484,7 +475,7 @@ public class KeyMap {
                         /* TODO */
                         Operation.VI_REDO,                  /* . */
                         Operation.VI_SEARCH,                /* / */
-                        Operation.VI_BEGINNING_OF_LINE_OR_ARG_DIGIT, /* 0 */
+                        Operation.VI_BEGNNING_OF_LINE_OR_ARG_DIGIT, /* 0 */
                         Operation.VI_ARG_DIGIT,             /* 1 */
                         Operation.VI_ARG_DIGIT,             /* 2 */
                         Operation.VI_ARG_DIGIT,             /* 3 */
@@ -503,8 +494,8 @@ public class KeyMap {
                         null,                               /* @ */
                         Operation.VI_APPEND_EOL,            /* A */
                         Operation.VI_PREV_WORD,             /* B */
-                        Operation.VI_CHANGE_TO_EOL,         /* C */
-                        Operation.VI_DELETE_TO_EOL,         /* D */
+                        Operation.VI_CHANGE_TO,             /* C */
+                        Operation.VI_DELETE_TO,             /* D */
                         Operation.VI_END_WORD,              /* E */
                         Operation.VI_CHAR_SEARCH,           /* F */
                         /* I need to read up on what this does */
@@ -521,7 +512,7 @@ public class KeyMap {
                         null,                               /* Q */
                         /* TODO */
                         Operation.VI_REPLACE,               /* R */
-                        Operation.VI_KILL_WHOLE_LINE,       /* S */
+                        Operation.VI_SUBST,                 /* S */
                         Operation.VI_CHAR_SEARCH,           /* T */
                         /* TODO */
                         Operation.REVERT_LINE,              /* U */
@@ -572,6 +563,6 @@ public class KeyMap {
         for (int i = 128; i < 256; i++) {
             map[i] = null;
         }
-        return new KeyMap(VI_MOVE, map);
+        return new KeyMap(VI_MOVE, map, false);
     }
 }

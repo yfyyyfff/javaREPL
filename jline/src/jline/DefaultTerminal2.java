@@ -98,17 +98,17 @@ public class DefaultTerminal2 implements Terminal2 {
         terminal.setEchoEnabled(enabled);
     }
 
-    public void disableInterruptCharacter() {
-        terminal.disableInterruptCharacter();
-    }
-
-    public void enableInterruptCharacter() {
-        terminal.enableInterruptCharacter();
-    }
-
-    public String getOutputEncoding() {
-        return terminal.getOutputEncoding();
-    }
+//    public void disableInterruptCharacter() {
+//        terminal.disableInterruptCharacter();
+//    }
+//
+//    public void enableInterruptCharacter() {
+//        terminal.enableInterruptCharacter();
+//    }
+//
+//    public String getOutputEncoding() {
+//        return terminal.getOutputEncoding();
+//    }
 
     private void registerCap(String cap, String value) {
         for (String key : InfoCmp.getNames(cap)) {
