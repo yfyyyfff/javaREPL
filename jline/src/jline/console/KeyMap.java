@@ -238,6 +238,51 @@ public class KeyMap {
         
         return keyMaps;
     }
+    
+    public static KeyMap windows() {
+        Object[] map = new Object[KEYMAP_LENGTH];
+        Object[] ctrl = new Object[] {
+                        // Control keys.
+                        Operation.SET_MARK,                 /* Control-@ */
+                        Operation.BEGINNING_OF_LINE,        /* Control-A */
+                        Operation.BACKWARD_CHAR,            /* Control-B */
+                        Operation.INTERRUPT,                /* Control-C */
+                        Operation.ABORT, // EXIT_OR_DELETE_CHAR,      /* Control-D */
+                        Operation.END_OF_LINE,              /* Control-E */
+                        Operation.FORWARD_CHAR,             /* Control-F */
+                        Operation.ABORT,                    /* Control-G */
+                        Operation.BACKWARD_DELETE_CHAR,     /* Control-H */
+                        Operation.COMPLETE,                 /* Control-I */
+                        Operation.ACCEPT_LINE,              /* Control-J */
+                        Operation.KILL_LINE,                /* Control-K */
+                        Operation.CLEAR_SCREEN,             /* Control-L */
+                        Operation.ACCEPT_LINE,              /* Control-M */
+                        Operation.NEXT_HISTORY,             /* Control-N */
+                        null,                               /* Control-O */
+                        Operation.PREVIOUS_HISTORY,         /* Control-P */
+                        Operation.QUOTED_INSERT,            /* Control-Q */
+                        Operation.REVERSE_SEARCH_HISTORY,   /* Control-R */
+                        Operation.FORWARD_SEARCH_HISTORY,   /* Control-S */
+                        Operation.TRANSPOSE_CHARS,          /* Control-T */
+                        Operation.UNIX_LINE_DISCARD,        /* Control-U */
+                        Operation.QUOTED_INSERT,            /* Control-V */
+                        Operation.UNIX_WORD_RUBOUT,         /* Control-W */
+                        emacsCtrlX(),                       /* Control-X */
+                        Operation.YANK,                     /* Control-Y */
+                        null,                               /* Control-Z */
+                        emacsMeta(),                        /* Control-[ */
+                        null,                               /* Control-\ */
+                        Operation.CHARACTER_SEARCH,         /* Control-] */
+                        null,                               /* Control-^ */
+                        Operation.UNDO,                     /* Control-_ */
+                };
+        System.arraycopy( ctrl, 0, map, 0, ctrl.length );
+        for (int i = 32; i < 256; i++) {
+            map[i] = Operation.SELF_INSERT;
+        }
+        map[DELETE] = Operation.BACKWARD_DELETE_CHAR;
+        return new KeyMap(EMACS, map, false);
+    }
 
     public static KeyMap emacs() {
         Object[] map = new Object[KEYMAP_LENGTH];

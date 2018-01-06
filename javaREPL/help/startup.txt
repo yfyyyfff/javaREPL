@@ -1,0 +1,21 @@
+##start vm
+
+java -Djline.WindowsTerminal.directConsole=false -cp  -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address="8000" -cp  ../../libs/lib/jansi-1.16.jar;../../jline/bin/;../../libs/lib/totallylazy-2.285.jar;../../libs/lib/utterlyidle-2.120.jar;../../libs/lib/yadic-2.48.jar;.  javarepl.Main
+
+
+java -Djline.WindowsTerminal.directConsole=false -cp  ../../libs/lib/jansi-1.16.jar;../../jline/bin/;../../libs/lib/totallylazy-2.285.jar;../../libs/lib/utterlyidle-2.120.jar;../../libs/lib/yadic-2.48.jar;.  javarepl.Main
+
+
+java -Djline.WindowsTerminal.directConsole=false  -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address="52222" -cp  ../../libs/lib/jansi-1.16.jar;../../jline/bin/;../../libs/lib/totallylazy-2.285.jar;../../libs/lib/utterlyidle-2.120.jar;../../libs/lib/yadic-2.48.jar;.  javarepl.Main
+
+
+
+
+### eclipse wait for vm to link
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address="8000" -jar 
+     test.jar
+
+
+### vm wait for eclpse to link
+java -Xdebug -Xrunjdwp:transport=dt_socket,address=127.0.0.1:8000,suspend=y 
+     -jar test.jar

@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="/repl.libs/lib/jansi-1.16.jar"/>
-	<classpathentry kind="lib" path="/repl.libs/lib/totallylazy-2.285.jar"/>
+	<classpathentry kind="lib" path="/repl.libs/lib/totallylazy-2.285.jar" sourcepath="/repl.libs/lib/totallylazy-2.285-sources.jar"/>
 	<classpathentry kind="lib" path="/repl.libs/lib/utterlyidle-2.120.jar"/>
 	<classpathentry kind="lib" path="/repl.libs/lib/yadic-2.48.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/repl.jline"/>
